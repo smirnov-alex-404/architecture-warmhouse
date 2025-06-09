@@ -1,0 +1,29 @@
+@startuml
+title WarmHouse Container Diagram
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
+
+
+Person(user, "User", "Пользователь системы умного дома")
+System(WarmHouseSystem, "WarmHouse System", "Умный дом")
+
+Container_Boundary(WarmHouseSystem, "WarmHouse System") {
+  Container(WebApp, "Web App", "Python, FastAPI", "Обрабатывает запросы")
+  Container(DeviceApp, "Device Service", "Python, FastAPI", "Добавление устройств и отправка им команд")
+  Container(MonitoringApp, "Monitoring Service", "Python, FastAPI", "Собирает телеметрию")
+  Container(Database, "Database", "PostgreSQL", "Хранит данные")
+}
+
+
+System_Ext(Device, "Устройства", "Добавленные пользователями устройства")
+
+Rel(user, WebApp, "Использует систему")
+Rel(WebApp, DeviceApp, "Управляет устройствами")
+Rel(WebApp, MonitoringApp, "Получает данные о состоянии устройств")
+
+Rel(DeviceApp, Database, "Чтение/Запись данных")
+Rel(MonitoringApp, Database, "Чтение/Запись данных")
+Rel(DeviceApp, Device, "Отправляет команды")
+Rel(MonitoringApp, Device, "Запрашивает текущее состояние")
+
+@enduml
