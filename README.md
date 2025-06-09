@@ -82,7 +82,7 @@
 
 3) Добавлены в docker-compose файл настройки для запуска postgres
 
-Для проверки можно использовалась Postman-коллекция `smarthome-api.postman_collection.json`:
+Для проверки использовалась Postman-коллекция `smarthome-api.postman_collection.json`:
 
 - Create Sensor
 - Get All Sensors
