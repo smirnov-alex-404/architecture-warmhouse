@@ -4,26 +4,46 @@ title WarmHouse Container Diagram
 !includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Component.puml
 
 
-Person(user, "User", "Пользователь системы умного дома")
+Person(User, "User", "Пользователь системы умного дома")
 System(WarmHouseSystem, "WarmHouse System", "Умный дом")
 
 Container_Boundary(WarmHouseSystem, "WarmHouse System") {
-  Container(WebApp, "Web App", "Python, FastAPI", "Обрабатывает запросы")
+  Container(Gateway, "API Gateway", "nginx", "Обрабатывает запросы")
+  Container(UserService, "User Service", "python", "Аутентификация/добавление/удаление пользователй")
+  Container(Scheduler, "Scheduler Service", "python", "Создание/запуск сценариев по триггерам/расписанию")
+  Container(WebApp, "Web App", "Python, FastAPI", "Предоставляет удобный интерфейс для пользователя")
   Container(DeviceApp, "Device Service", "Python, FastAPI", "Добавление устройств и отправка им команд")
-  Container(MonitoringApp, "Monitoring Service", "Python, FastAPI", "Собирает телеметрию")
-  Container(Database, "Database", "PostgreSQL", "Хранит данные")
+  Container(TelemetryService, "Telemetry Service", "Python, FastAPI", "Собирает телеметрию")
+  Container(Database, "Реляционная БД", "PostgreSQL", "Хранит данные")
+  Container(DatabaseClickHouse, "Колоночная БД", "ClickHouse", "Хранит данные")
+  Container(MessageBroker, "MQTT Broker")
 }
 
+System_Ext(Device, "Devices", "Добавленные пользователями устройства")
 
-System_Ext(Device, "Устройства", "Добавленные пользователями устройства")
+Rel(User, Gateway, "Использует систему")
+Rel(Gateway, WebApp, "")
+Rel(Gateway, UserService, "Аутентификация")
+Rel(Gateway, Scheduler, "Создание сценариев")
+Rel(Gateway, DeviceApp, "Управляет устройствами")
+Rel(Gateway, TelemetryService, "Собирает телеметрию")
 
-Rel(user, WebApp, "Использует систему")
-Rel(WebApp, DeviceApp, "Управляет устройствами")
-Rel(WebApp, MonitoringApp, "Получает данные о состоянии устройств")
-
+Rel(UserService, Database, "Чтение/Запись данных")
+Rel(Scheduler, Database, "Чтение/Запись данных")
+Rel(Scheduler, MessageBroker, "Отправляет команды")
+Rel(WebApp, Database, "Чтение/Запись данных")
 Rel(DeviceApp, Database, "Чтение/Запись данных")
-Rel(MonitoringApp, Database, "Чтение/Запись данных")
-Rel(DeviceApp, Device, "Отправляет команды")
-Rel(MonitoringApp, Device, "Запрашивает текущее состояние")
+Rel(TelemetryService, DatabaseClickHouse, "Чтение/Запись данных")
+
+Rel(MessageBroker, Gateway, "Отправляет команды")
+
+
+
+Rel(DeviceApp, MessageBroker, "Отправляет команды")
+Rel(TelemetryService, MessageBroker, "Запрашивает текущее состояние")
+
+
+Rel(MessageBroker, Device, "Взаимодействие через брокер")
+Rel(Device, MessageBroker, "")
 
 @enduml
