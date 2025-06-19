@@ -19,7 +19,7 @@ entity Device {
   --
   serial_number : NUMBER
   type_id : NUMBER
-  user_id : NUMBER
+  home_id : NUMBER
   status : VARCHAR
 }
 
@@ -38,7 +38,7 @@ entity Telemetry {
   value: VARCHAR
 }
 
-User -- Device
+Home -- Device
 User -- Home
 Device -- Telemetry
 Device -- DeviceType
