@@ -1,0 +1,18 @@
+@startuml
+class User {
+  +str name
+  +str email
+  +def register()
+  +def login()
+}
+
+class Device {
+  +ID int
+  +str name
+  +def linkDevice()
+  +def removeDevice()
+}
+
+User  --  Device : has
+
+@enduml

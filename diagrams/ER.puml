@@ -1,0 +1,46 @@
+@startuml
+
+entity User {
+  * user_id : NUMBER
+  --
+  email : VARCHAR
+  password : VARCHAR
+}
+
+entity Home {
+  * home_id : NUMBER
+  --
+  user_id : NUMBER
+  name : VARCHAR
+}
+
+entity Device {
+  * device_id : NUMBER
+  --
+  serial_number : NUMBER
+  type_id : NUMBER
+  home_id : NUMBER
+  status : VARCHAR
+}
+
+entity DeviceType {
+  * type_id : NUMBER
+  --
+  name : VARCHAR
+}
+
+
+entity Telemetry {
+  * telemetry_id : NUMBER
+  --
+  device_id: NUMBER
+  date: TIMESTAMP
+  value: VARCHAR
+}
+
+Home -- Device
+User -- Home
+Device -- Telemetry
+Device -- DeviceType
+
+@enduml
